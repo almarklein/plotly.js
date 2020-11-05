@@ -125,9 +125,28 @@ module.exports = function handleAxisDefaults(containerIn, containerOut, coerce, 
         }
     }
 
+    var tickLabelMode;
     if(axType === 'date') {
-        if(!options.noTicklabelmode) coerce('ticklabelmode');
+        if(!options.noTicklabelmode) {
+            tickLabelMode = coerce('ticklabelmode');
+        }
+    }
 
+    if(!options.noTicklabelposition) {
+        var hasPeriod = tickLabelMode === 'period';
+        var tickLabelPosition = coerce('ticklabelposition');
+        if(hasPeriod || letter === 'x') {
+            containerOut.ticklabelposition = tickLabelPosition
+                .replace(' top', '')
+                .replace(' bottom', '');
+        } else if(hasPeriod || letter === 'y') {
+            containerOut.ticklabelposition = tickLabelPosition
+                .replace(' left', '')
+                .replace(' right', '');
+        }
+    }
+
+    if(axType === 'date') {
         handleArrayContainerDefaults(containerIn, containerOut, {
             name: 'rangebreaks',
             inclusionAttr: 'enabled',
